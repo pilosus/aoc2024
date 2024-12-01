@@ -1,5 +1,6 @@
 (ns aoc2024.tools
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [clojure.string :as s]))
 
 (def alphabet "abcdefghijklmnopqrstuvwxyz")
 
@@ -45,6 +46,11 @@
                  last)
          postfix (if test? ".test" "")]
      (format "resources/input/%s%s.txt" day postfix))))
+
+(defn str->vals
+  "Returna vector of values that has been separated by whitespace(s)"
+  [s]
+  (string/split s #"\s+"))
 
 (defn str->vec
   "Return a vector of letters"
