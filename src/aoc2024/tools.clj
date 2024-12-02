@@ -62,6 +62,14 @@
   [s]
   (Integer/parseInt s))
 
+(defn str->ints
+  [s]
+  (reduce
+   (fn [acc v]
+     (conj acc (str->int v)))
+   []
+   (string/split s #"\s+")))
+
 ;; Vectors
 
 (defn ->v
