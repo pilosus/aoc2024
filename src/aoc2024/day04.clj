@@ -30,3 +30,31 @@
                        t/path->lines
                        t/positions)]
     (count-words positions)))
+
+(defn get-x
+  [positions [x y]]
+  (str (get positions [x y]) ;; 1
+       (get positions [(- x 1) (- y 1)]) ;; 2
+       (get positions [(- x 1) (+ y 1)]) ;; 3
+       (get positions [(+ x 1) (+ y 1)]) ;; 4
+       (get positions [(+ x 1) (- y 1)]))) ;; 5
+
+(def x-variants #{"AMMSS" "ASSMM" "AMSSM" "ASMMS"})
+
+(defn count-x
+  [positions]
+  (count
+   (for [pos (keys positions)
+         :let [x (get-x positions pos)]
+         :when (get x-variants x)]
+     1)))
+
+(defn part2
+  "Part 2: (part2)
+  => 1902
+  Test: (part2 :test? true)"
+  [& {:keys [test?] :or {test? false}}]
+  (let [positions (->> (t/input-path test?)
+                       t/path->lines
+                       t/positions)]
+    (count-x positions)))
