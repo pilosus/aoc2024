@@ -76,6 +76,19 @@
   [s]
   (into [] s))
 
+;; Positions
+
+(defn vec-indexed [items]
+  (map-indexed vector items))
+
+(defn positions
+  "Return a mapping of a [x y] position to its value in the lines matrix"
+  [lines]
+  (into {}
+        (for [[y line] (vec-indexed lines)
+              [x c]    (vec-indexed line)]
+          [[x y] c])))
+
 ;; Matrix ops
 
 (defn matrix-indexed
