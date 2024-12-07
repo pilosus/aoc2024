@@ -49,15 +49,39 @@
   [{:keys [grid start max-x max-y]}]
   (loop [pos start
          delta (:u deltas)
-         steps #{}]
-    (let [next-pos (move pos delta)]
-      (if (out? next-pos max-x max-y)
-        (count (conj steps pos))
-        (if (obstacle? next-pos grid)
-          ;; avoid obstacle by turning
-          (recur pos (turn delta) steps)
-          ;; step forward
-          (recur next-pos delta (conj steps pos)))))))
+         steps #{}
+         turns #{}]
+    (let [next-pos (move pos delta)
+          ;; guard cannot pass the same turn in the same direction (delta) twice
+          ;; without being in the infinite loop
+          loop? (contains? turns [pos delta])]
+      (cond
+        (out? next-pos max-x max-y) (count (conj steps pos))
+        loop? nil
+        :else (if (obstacle? next-pos grid)
+                ;; avoid obstacle by turning
+                (recur
+                 pos
+                 (turn delta)
+                 steps
+                 (conj turns [pos delta]))
+                ;; step forward
+                (recur next-pos delta (conj steps pos) turns))))))
+
+(defn find-loops
+  [data]
+  (let [[start-x start-y] (:start data)]
+    (for [x (range (inc (:max-x data)))
+          y (range (inc (:max-y data)))
+          :when (not= [x y] [start-x start-y])
+          :let [data' (assoc-in data [:grid [x y]] "#")]]
+      (count-steps data'))))
+
+(defn count-loops
+  [data]
+  (->> data
+       (filter nil?)
+       count))
 
 (defn part1
   "Part 1: (part1)
@@ -66,3 +90,13 @@
   [& {:keys [test?] :or {test? false}}]
   (let [data (get-data test?)]
     (count-steps data)))
+
+(defn part2
+  "Part 2: (part2)
+  => 1503 Elapsed time: 24771.455459 msecs
+  Test: (part2 :test? true)"
+  [& {:keys [test?] :or {test? false}}]
+  (let [data (get-data test?)]
+    (->> data
+         find-loops
+         count-loops)))
