@@ -82,7 +82,8 @@
   (map-indexed vector items))
 
 (defn positions
-  "Return a mapping of a [x y] position to its value in the lines matrix"
+  "Return a mapping of a [x y] position to its value in the lines matrix.
+  x is a column index, y is a row index."
   [lines]
   (into {}
         (for [[y line] (vec-indexed lines)
