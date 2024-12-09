@@ -62,11 +62,24 @@
   [s]
   (Integer/parseInt s))
 
+(defn str->long
+  "Parse string into an Long"
+  [s]
+  (parse-long s))
+
 (defn str->ints
   [s]
   (reduce
    (fn [acc v]
      (conj acc (str->int v)))
+   []
+   (string/split s #"\s+")))
+
+(defn str->longs
+  [s]
+  (reduce
+   (fn [acc v]
+     (conj acc (parse-long v)))
    []
    (string/split s #"\s+")))
 
